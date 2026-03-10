@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EL Encashment Bill - Stylish Version</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+        h2 { 
+            color: #2c3e50; 
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+            margin-top: 0;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .sheet-tabs { 
+            display: flex; 
+            gap: 15px; 
+            margin: 25px 0;
+            flex-wrap: wrap; 
+        }
+        .tab-btn { 
+            padding: 14px 35px; 
+            background: linear-gradient(145deg, #f0f0f0, #ffffff);
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 5px 5px 10px #d9d9d9, -5px -5px 10px #ffffff;
+        }
+        .tab-btn.active { 
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        .sheet-pane { 
+            display: none; 
+            background: white; 
+            border-radius: 24px; 
+            padding: 30px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1); 
+            margin-top: 20px; 
+            overflow-x: auto; 
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .sheet-pane.active { display: block; }
+        
+        /* Stylish Data Form */
+        .data-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .form-group {
+            background: #f8fafd;
+            border-radius: 15px;
+            padding: 15px;
+            border: 1px solid #e1e8f0;
+            transition: all 0.3s ease;
+        }
+        .form-group:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-group input,.form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .form-group input[type="number"]::-webkit-outer-spin-button,
+        .form-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+            font-size: 12px; 
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        th, td { 
+            border: 1px solid #e2e8f0; 
+            padding: 8px 10px; 
+            vertical-align: middle; 
+        }
+        th { 
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td { background: white; }
+        .readonly-field { 
+            background: #f8fafd; 
+            color: #2c3e50; 
+            font-weight: 500; 
+            padding: 20px; 
+            border-radius: 15px; 
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .grand-total-row { 
+            background: linear-gradient(145deg, #f0f5fa, #e6ecf5);
+            font-weight: bold;
+			font-size:12px;
+        }
+        .summary-table {
+            margin-top: 30px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .summary-table th {
+            background: linear-gradient(145deg, #4a5568, #2d3748);
+        }
+        
+        /* Print Buttons */
+        .print-section {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            justify-content: flex-end;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .print-btn { 
+            background: linear-gradient(145deg, #2c3e50, #1a2634);
+            color: white; 
+            border: none; 
+            padding: 12px 30px; 
+            border-radius: 50px; 
+            font-size: 14px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
+        }
+        .print-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(44, 62, 80, 0.4);
+        }
+        .print-btn.proceeding-btn {
+            background: linear-gradient(145deg, #27ae60, #219a52);
+        }
+        .print-btn.bill-btn {
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+        }
+        .merge-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(145deg, #f8fafd, #edf2f7);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+            color: #2c3e50;
+            border: 1px solid #cbd5e0;
+        }
+        .merge-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        .footer-note { 
+            background: linear-gradient(145deg, #f8fafd, #edf2f7);
+            padding: 20px; 
+            border-radius: 15px; 
+            margin-top: 25px;
+            border-left: 5px solid #667eea;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .sheet-tabs, .print-section, .tab-btn, .print-btn, .footer-note, .merge-option { display: none; }
+            #data { display: none !important; }
+            #proceeding, #bill { display: block !important; box-shadow: none; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>🏦 EL Encashment Bill - Earned Leave / Half Pay Leave</h2>
+    <marquee style=" color:red;">Please follow more Updates ** www.skbadi.com ** </marquee>
+    <div class="sheet-tabs">
+        <button class="tab-btn active" data-tab="data">📋 DATA SHEET</button>
+        <button class="tab-btn" data-tab="proceeding">📄 PROCEEDING</button>
+        <button class="tab-btn" data-tab="bill">💰 BILL</button>
+    </div>
+
+    <!-- DATA SHEET PANE - Stylish Form -->
+    <div id="data" class="sheet-pane active">
+        <div class="data-form">
+            <div class="form-group">
+                <label>🏛️ DDO Designation</label>
+                <input type="text" id="ddo_desig" value="MANDAL EDUCATIONAL OFFICER" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>🏢 DDO Office</label>
+                <input type="text" id="ddo_office" value="MRC KOTHAPALLY" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>📍 DDO Mandal</label>
+                <input type="text" id="ddo_mandal" value="KOTHAPALLY" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>👤 DDO Name</label>
+                <input type="text" id="ddo_name" value="X XXXXXX" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>🎓 DDO Qualifications</label>
+                <input type="text" id="ddo_qual" value="M.A., B.Ed." class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>🧑 Employee Name</label>
+                <input type="text" id="emp_name" value="X XXXXXXX" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>🆔 Employee ID</label>
+                <input type="text" id="emp_id" value="XXXXXXX" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>💼 Designation</label>
+                <input type="text" id="emp_desig" value="SGT" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>🏫 Retired Place</label>
+                <input type="text" id="ret_place" value="MPPS " class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>📅 Retirement Date</label>
+                <input type="date" id="ret_date" value="2025-11-30" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>📊 Total ELs</label>
+                <input type="number" id="total_el" value="78" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>📈 Total HPLs</label>
+                <input type="number" id="total_hpl" value="342" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>💰 Basic Pay</label>
+                <select id="basic_pay" class="calc-input">
+				<option value="19000">19000</option>
+                                <option value="19640">19640</option>
+                                <option value="20280">20280</option>
+                                <option value="20920">20920</option>
+                                <option value="21580">21580</option>
+                                <option value="22240">22240</option>
+                                <option value="22900">22900</option>
+                                <option value="23590">23590</option>
+                                <option value="24280">24280</option>
+                                <option value="24970">24970</option>
+                                <option value="25690">25690</option>
+                                <option value="26410">26410</option>
+                                <option value="27130">27130</option>
+                                <option value="27880">27880</option>
+                                <option value="28630">28630</option>
+                                <option value="29380">29380</option>
+                                <option value="30210">30210</option>
+                                <option value="31040">31040</option>
+                                <option value="31870">31870</option>
+                                <option value="32810">32810</option>
+                                <option value="33750">33750</option>
+                                <option value="34690">34690</option>
+                                <option value="35720">35720</option>
+                                <option value="36750">36750</option>
+                                <option value="37780">37780</option>
+                                <option value="38890">38890</option>
+                                <option value="40000">40000</option>
+                                <option value="41110">41110</option>
+                                <option value="42300">42300</option>
+                                <option value="43490">43490</option>
+                                <option value="44680">44680</option>
+                                <option value="45960">45960</option>
+                                <option value="47240">47240</option>
+                                <option value="54220">54220</option>
+                                <option value="55720">55720</option>
+                                <option value="57220">57220</option>
+                                <option value="58850">58850</option>
+                                <option value="60480">60480</option>
+                                <option value="62110">62110</option>
+                                <option value="63840">63840</option>
+                                <option value="65570">65570</option>
+                                <option value="67300">67300</option>
+                                <option value="69150">69150</option>
+                                <option value="71000">71000</option>
+                                <option value="72850">72850</option>
+                                <option value="74840">74840</option>
+                                <option value="76830">76830</option>
+                                <option value="78820">78820</option>
+                                <option value="80960">80960</option>
+                                <option value="83100">83100</option>
+                                <option value="85240">85240</option>
+                                <option value="87510">87510</option>
+                                <option value="89780">89780</option>
+                                <option value="92050">92050</option>
+                                <option value="94470">94470</option>
+                                <option value="96890">96890</option>
+                                <option value="99310">99310</option>
+                                <option value="101870">101870</option>
+                                <option value="104430">104430</option>
+                                <option value="106990">106990</option>
+                                <option value="109750">109750</option>
+                                <option value="112510">112510</option>
+                                <option value="115270">115270</option>
+                                <option value="118230">118230</option>
+                                <option value="121190">121190</option>
+                                <option value="124150">124150</option>
+                                <option value="127310">127310</option>
+                                <option value="130470">130470</option>
+                                <option value="133630">133630</option>
+                                <option value="137050">137050</option>
+                                <option value="140470">140470</option>
+                                <option value="143890">143890</option>
+                                <option value="147310">147310</option>
+                                <option value="151000">151000</option>
+                                <option value="154690">154690</option>
+                                <option value="158380">158380</option>
+                                <option value="162070">162070</option>
+                            </select>
+            </div>
+            <div class="form-group">
+                <label>📊 DA (%)</label>
+                <input type="number" id="da_percent" value="33.67" step="0.01" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>🏠 HRA (%)</label>
+                <input type="number" id="hra_percent" value="17" class="calc-input">
+            </div>
+            <div class="form-group">
+                <label>⚖️ Scale</label>
+                 <select id="scale" class="calc-input">
+				 <option value="19000-58850">19000-58850</option>
+                                <option value="19640-60480">19640-60480</option>
+                                <option value="20280-62110">20280-62110</option>
+                                <option value="21580-65570">21580-65570</option>
+                                <option value="22240-67300">22240-67300</option>
+                                <option value="22900-69150">22900-69150</option>
+                                <option value="24280-72850">24280-72850</option>
+                                <option value="26410-78820">26410-78820</option>
+                                <option value="27130-80960">27130-80960</option>
+                                <option value="28630-85240">28630-85240</option>
+                                <option value="31040-92050">31040-92050</option>
+                                <option value="32810-96890">32810-96890</option>
+                                <option value="33750-99310">33750-99310</option>
+                                <option value="35720-104430">35720-104430</option>
+                                <option value="36750-106990">36750-106990</option>
+                                <option value="38890-112510">38890-112510</option>
+                                <option value="42300-115270">42300-115270</option>
+                                <option value="43490-118230">43490-118230</option>
+                                <option value="45960-124150">45960-124150</option>
+                                <option value="51320-127310">51320-127310</option>
+                                <option value="54220-133630">54220-133630</option>
+                                <option value="58850-137050">58850-137050</option>
+                                <option value="62110-140470">62110-140470</option>
+                                <option value="67300-143890">67300-143890</option>
+                                <option value="72850-147310">72850-147310</option>
+                                <option value="76830-151000">76830-151000</option>
+                                <option value="83100-154690">83100-154690</option>
+                                <option value="89780-154690">89780-154690</option>
+                                <option value="96890-158380">96890-158380</option>
+                                <option value="106990-158380">106990-158380</option>
+                                <option value="118230-162070">118230-162070</option>
+                                <option value="127310-162070">127310-162070</option>
+                            </select>
+				 
+				 
+				 
+            </div>
+        </div>
+        <div class="footer-note">
+            ⚡ ఇన్పుట్ మార్చండి - Proceeding & Bill ఆటోమేటిక్ అప్డేట్ అవుతాయి
+        </div>
+    </div>
+
+    <!-- PROCEEDING SHEET PANE -->
+    <div id="proceeding" class="sheet-pane">
+        <div class="print-section">
+            <button class="print-btn proceeding-btn" onclick="printProceeding()">🖨️ ప్రింట్ PROCEEDING (Portrait)</button>
+        </div>
+        <div id="proceedingContent" class="readonly-field" style="font-family:'Times New Roman'; line-height:1.6;"></div>
+    </div>
+
+    <!-- BILL SHEET PANE -->
+    <div id="bill" class="sheet-pane">
+        <div class="print-section">
+            <div class="merge-option">
+                <input type="checkbox" id="mergeMode" onchange="refreshAll()">
+                <label for="mergeMode">🔗 Merge Mode (కుదించిన బిల్లు)</label>
+            </div>
+            <button class="print-btn bill-btn" onclick="printBill()">🖨️ ప్రింట్ BILL (Landscape)</button>
+        </div>
+        <div id="billContent" class="readonly-field" style="overflow-x:auto;"></div>
+    </div>
+</div>
+
+<script>
+    // Helper functions
+    function formatDate(dStr) { if(!dStr) return ''; let d = new Date(dStr); return `${d.getDate().toString().padStart(2,'0')}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getFullYear()}`; }
+    function day(dStr) { return dStr ? new Date(dStr).getDate() : ''; }
+    function month(dStr) { return dStr ? new Date(dStr).getMonth()+1 : ''; }
+    function year(dStr) { return dStr ? new Date(dStr).getFullYear() : ''; }
+
+    // Print functions
+    function printProceeding() {
+        const proceedingContent = document.getElementById('proceedingContent').innerHTML;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Proceeding - EL Encashment Bill</title>
+                <style>
+                    body { font-family: 'Times New Roman', serif; padding: 10px; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th, td { border: 1px solid #000; padding: 8px; }
+                    @page { size: portrait; margin: 1cm; }
+                </style>
+            </head>
+            <body>
+                ${proceedingContent}
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    }
+
+    function printBill() {
+        const billContent = document.getElementById('billContent').innerHTML;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Bill - EL Encashment</title>
+                <style>
+                    body { font-family: 'Arial', sans-serif; padding: 10px; }
+                    table { border-collapse: collapse; width: 100%; font-size: 11px; margin-bottom: 20px; }
+                    th, td { border: 1px solid #000; padding: 4px; text-align: center;}
+                    th { background: #e2ebf3; }
+                    .grand-total-row { background: #d9edf7; font-weight: bold; }
+                    .summary-table { width: 80%; margin: 20px auto; }
+                    .summary-table th { background: #4a5568; color: white; }
+                    @page { size: landscape; margin: 0.5cm; }
+                </style>
+            </head>
+            <body>
+                ${billContent}
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    }
+
+    // Main refresh function
+    function refreshAll() {
+        // Get inputs
+        const ddo_desig = document.getElementById('ddo_desig').value;
+        const ddo_office = document.getElementById('ddo_office').value;
+        const ddo_mandal = document.getElementById('ddo_mandal').value;
+        const ddo_name = document.getElementById('ddo_name').value;
+        const ddo_qual = document.getElementById('ddo_qual').value;
+        const emp_name = document.getElementById('emp_name').value;
+        const emp_id = document.getElementById('emp_id').value;
+        const emp_desig = document.getElementById('emp_desig').value;
+        const ret_place = document.getElementById('ret_place').value;
+        const ret_date = document.getElementById('ret_date').value;
+        const total_el = parseFloat(document.getElementById('total_el').value) || 0;
+        const total_hpl = parseFloat(document.getElementById('total_hpl').value) || 0;
+        const basic_pay = parseFloat(document.getElementById('basic_pay').value) || 0;
+        const da_percent = parseFloat(document.getElementById('da_percent').value) || 0;
+        const hra_percent = parseFloat(document.getElementById('hra_percent').value) || 0;
+        const scale = document.getElementById('scale').value;
+        
+        // Merge mode
+        const mergeMode = document.getElementById('mergeMode')?.checked || false;
+
+        const retDay = ret_date ? day(ret_date) : '';
+        const retMonth = ret_date ? month(ret_date) : '';
+        const retYear = ret_date ? year(ret_date) : '';
+
+        // Calculations
+        const halfPay = Math.round(basic_pay / 2);
+        const daOnHalf = Math.round(halfPay * da_percent / 100);
+        const totalHalfComp = halfPay + daOnHalf;
+        const oneDayRate = Math.round(totalHalfComp / 30);
+
+        let permEL = Math.min(total_el, 300);
+        let permHPL = 0;
+        if (permEL <= 300) {
+            permHPL = Math.min(300 - permEL, total_hpl);
+        }
+
+        const hplAmount = oneDayRate * permHPL;
+
+        // Generate row days
+        function generateRowDays(basePerm, totalRows = 10) {
+            let days = [];
+            for (let i = 0; i < totalRows; i++) {
+                let remaining = basePerm - (i * 30);
+                if (remaining <= 0) days.push(0);
+                else days.push(Math.min(30, remaining));
+            }
+            return days;
+        }
+
+        let elDaysPerRow = generateRowDays(permEL, 10);
+        let hplDaysPerRow = generateRowDays(permHPL, 10);
+
+        // Calculate EL amounts
+        let elAmounts = elDaysPerRow.map(d => d === 0 ? 0 : Math.round((basic_pay / 30) * d));
+        let elDA = elAmounts.map(amt => Math.round(amt * da_percent / 100));
+        let elHRA = elAmounts.map(amt => Math.round(amt * hra_percent / 100));
+        let elTotal = elAmounts.map((amt, idx) => amt + elDA[idx] + elHRA[idx]);
+
+        let sumE13 = elAmounts.reduce((a, b) => a + b, 0);
+        let sumF13 = elDA.reduce((a, b) => a + b, 0);
+        let sumG13 = elHRA.reduce((a, b) => a + b, 0);
+        let sumK13 = elTotal.reduce((a, b) => a + b, 0);
+
+        // Calculate HPL amounts
+        let hplAmounts = hplDaysPerRow.map(d => d === 0 ? 0 : Math.round((halfPay / 30) * d));
+        let hplDA = hplAmounts.map(amt => Math.round(amt * da_percent / 100));
+        let hplTotal = hplAmounts.map((amt, idx) => amt + hplDA[idx]);
+
+        let sumE24 = hplAmounts.reduce((a, b) => a + b, 0);
+        let sumF24 = hplDA.reduce((a, b) => a + b, 0);
+        let sumK24 = hplTotal.reduce((a, b) => a + b, 0);
+
+        let grandTotalDays = permEL + permHPL;
+        let grandTotalBasic = sumE13 + sumE24;
+        let grandTotalDA = sumF13 + sumF24;
+        let grandTotalHRA = sumG13;
+        let grandTotalK = sumK13 + sumK24;
+
+        // PROCEEDING HTML
+        let procHtml = `
+        <div style="max-width:100%; margin:0 auto; font-size:14px;">
+            <h3 style="text-align:center;">PROCEEDING OF THE ${ddo_desig}, ${ddo_office}, ${ddo_mandal}</h3>
+            <p style="text-align:center;"><b>Present: ${ddo_name}, ${ddo_qual}</b></p>
+			<hr>
+           <div style="display: flex; justify-content: space-between; margin: 15px 0; font-family: Trebuchet MS;">
+    <div>Proc.No: _________/EL&HPL_Encashment/___________</div>
+    <div>Date: ___________________</div>
+  </div>
+       <div style="display: flex; gap: 10px;">
+      <div><u>Sub:</u></div>
+      <div style="text-align: justify;">
+         Establishment-Encashment of Earned Leaves & Half Pay Leaves - in respect of ${emp_name}, ${emp_desig}, ${ret_place} - due to retired on ${retDay}-${retMonth}-${retYear} - Sanction Orders - Issued.</div>
+    </div>     
+			
+	         <div style="margin: 20px 0;">
+    <div style="display: flex; gap: 10px;">
+      <div style="font-family: Trebuchet MS;"><u>Ref:</u></div>
+      <div style="text-align: justify; font-family: Trebuchet MS; line-height: 1.8;">
+        1.GO.Ms.No 232, Dated 16.09.2005.<br />
+        2.G.O.Ms.No.51, Finance (HRM-IV) Department, Dated: 11-06-2021.<br>
+		3.Circular Memo. No.755-A/33/A1/HRM.IV/2021 Dated: 17-06-2021.<br>
+		4.Application of the Individual.
+      </div>
+    </div>
+  </div>
+			
+            <p style="text-align:center;">-@@@-</p>
+            <p><b><u>Order:</u></b></p>
+            <p style="text-align:justify;">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp As per references cited above ${ddo_desig} is accorded permission after due verification of leave account in the service register of ${emp_name}, ${emp_desig}, ${ret_place} who is retired on ${retDay}-${retMonth}-${retYear} for encashment of ${total_el} Days Earned Leaves with equivalent to leave salary and ${total_hpl} Days of Half Pay Leaves with taking in to account of Basic Pay Rs.${basic_pay} and DA ${da_percent}% as on date of Retirement ${retDay}-${retMonth}-${retYear} with subject to the condition that the Earned Leave and Half Pay Leave put together should not exceed 300 Days for Encashment.</p>
+            <p><b>The Leave Account details of the employee is as follows:</b></p>
+            <table style="width:80%; margin:0 auto; border-collapse:collapse;" border="1">
+                <tr><th>Leave</th><th>Total Balance as on ${retDay}-${retMonth}-${retYear}</th><th>No of leaves Permitted to encash</th></tr>
+                <tr><td>Earned Leave</td><td style="text-align:center;">${total_el}</td><td style="text-align:center;">${permEL}</td></tr>
+                <tr><td>Half Pay Leave</td><td style="text-align:center;">${total_hpl}</td><td style="text-align:center;">${permHPL}</td></tr>
+            </table>
+            <p><b>HPL's Calculation is as follow:</b></p>
+            <table style="width:100%; border-collapse:collapse;" border="1">
+                <tr><th>Description</th><th>Amount (Rs.)</th></tr>
+                <tr><td style="text-align:center;" colspan="2">Cash Payment in lieu of Half Pay Leave component   =  <br> (HPL Salary admissible on the date of retirement   +   DA admissible on that date) / 30 <br>X (No of days of HPL at credit subject to the total of EL and HPL at credit not exceeding 300 days.)</td></tr>
+                <tr><td>HPL Salary (Basic Pay/2)</td><td style="text-align:right;">${halfPay}</td></tr>
+                <tr><td>DA on HPL Salary @ ${da_percent}%</td><td style="text-align:right;">${daOnHalf}</td></tr>
+                <tr><td><b>Total (HPL Salary + DA)</b></td><td style="text-align:right;"><b>${totalHalfComp}</b></td></tr>
+                <tr><td>Divided by 30 (Per Day Rate)</td><td style="text-align:right;">${oneDayRate}</td></tr>
+                <tr><td>Multiplied by Permitted HPL Days (${permHPL})</td><td style="text-align:right;">${oneDayRate} X ${permHPL} = <b>Rs. ${hplAmount}</b></td></tr>
+                <tr style="background:#e8f0fe;"><td><b>= ${halfPay} + ${daOnHalf} = ${totalHalfComp} / 30 = ${oneDayRate} X ${permHPL} = Rs. ${hplAmount}</b></td><td style="text-align:right;"><b>Rs. ${hplAmount}</b></td></tr>
+            </table>
+            <p><b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSanction is hereby accorded for the drawal of Rs.${grandTotalK}/- (EL's Rs.${sumK13} + HPL's Rs.${sumK24}) and to be credit in to the individual account of ${emp_name} who is retired on ${retDay}-${retMonth}-${retYear}.</b></p>
+            <p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspNecessary entries are recorded in the Service Register of the individual. It is informed that If any excess amount paid during sanction, the excess amount will be recovered from the Pensionary Benefits of the individual.</p>
+            <p><b>Copy to:</b><br>1. Individual Concerned<br>2. Office Copy<br>3. Concerned STO</p>
+            <p style="margin-top:30px;text-align:right;">${ddo_name}<br>${ddo_desig}</p>
+        </div>`;
+        document.getElementById('proceedingContent').innerHTML = procHtml;
+
+        // Calculate total rows for rowspan
+        function getTotalRowCount() {
+            let count = 0;
+            
+            // EL rows
+            for (let i = 0; i < 10; i++) {
+                if (elDaysPerRow[i] > 0) count++;
+            }
+            
+            // EL Total row
+            if (permEL > 0) count++;
+            
+            // HPL rows
+            for (let i = 0; i < 10; i++) {
+                if (hplDaysPerRow[i] > 0) count++;
+            }
+            
+            // HPL Total row
+            if (permHPL > 0) count++;
+            
+            // Grand Total row
+            count++;
+            
+            return count;
+        }
+
+        // BILL HTML - MAIN TABLE
+        let mainTableRows = '';
+        let totalRows = getTotalRowCount();
+
+        if (mergeMode) {
+            // MERGE MODE - కుదించిన బిల్లు (ప్రతి వరుసకు Sl.No)
+            let slNo = 1;
+            
+            // EL Row
+            mainTableRows += `<tr>
+                <td>${slNo}</td>
+                <td>${emp_id}</td>
+                <td>${emp_name}, ${emp_desig}, Scale: ${scale} / ${basic_pay}</td>
+                <td>${permEL} Days EL</td>
+                <td>${sumE13}</td>
+                <td>${sumF13}</td>
+                <td>${sumG13}</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>${sumK13}</td>
+                <td>Sanctioned ${permEL} EL</td>
+            </tr>`;
+            slNo++;
+            
+            // HPL Row
+            if (permHPL > 0) {
+                mainTableRows += `<tr>
+                    <td>${slNo}</td>
+                    <td></td>
+                    <td></td>
+                    <td>${permHPL} Days HPL</td>
+                    <td>${sumE24}</td>
+                    <td>${sumF24}</td>
+                    <td>0</td>
+                    <td>-</td><td>-</td><td>-</td>
+                    <td>${sumK24}</td>
+                    <td>Sanctioned ${permHPL} HPL</td>
+                </tr>`;
+                slNo++;
+            }
+            
+            // Grand Total Row
+            mainTableRows += `<tr>
+                <td>Grand Total</td><td></td><td></td>
+                <td>${grandTotalDays}</td>
+                <td>${grandTotalBasic}</td><td>${grandTotalDA}</td><td>${grandTotalHRA}</td>
+                <td>0</td><td>-</td><td>-</td>
+                <td>${grandTotalK}</td><td></td>
+            </tr>`;
+            
+        } else {
+            // NORMAL MODE - Sl.No, Emp ID, Name & Designation అన్నీ merge అయ్యి ఉండాలి
+            
+            // First EL row with employee details (అన్ని వివరాలు ఉంటాయి)
+            if (elDaysPerRow[0] > 0) {
+                mainTableRows += `<tr>
+                    <td rowspan="${totalRows}">1</td>
+                    <td rowspan="${totalRows}">${emp_id}</td>
+                    <td rowspan="${totalRows}">${emp_name}, ${emp_desig}, Scale: ${scale} / ${basic_pay}</td>
+                    <td>${elDaysPerRow[0]} Days EL</td>
+                    <td>${elAmounts[0]}</td>
+                    <td>${elDA[0]}</td>
+                    <td>${elHRA[0]}</td>
+                    <td>-</td><td>-</td><td>-</td>
+                    <td>${elTotal[0]}</td>
+                    <td style="writing-mode:vertical-rl;text-align:center;"rowspan="${totalRows}">The concerned individual has beenSanctioned ${permEL} EL & ${permHPL} HPL vide<br>${ddo_desig}, ${ddo_office}, <br><br> Pro.No._________________ Date._______________</td>
+                </tr>`;
+            }
+
+            // Remaining EL rows (Sl.No, Emp ID, Name & Designation ఖాళీ)
+            for (let i = 1; i < 10; i++) {
+                if (elDaysPerRow[i] > 0) {
+                    mainTableRows += `<tr>
+                        <td>${elDaysPerRow[i]} Days EL</td>
+                        <td>${elAmounts[i]}</td>
+                        <td>${elDA[i]}</td>
+                        <td>${elHRA[i]}</td>
+                        <td>-</td><td>-</td><td>-</td>
+                        <td>${elTotal[i]}</td>
+                        <td></td>
+                    </tr>`;
+                }
+            }
+
+            // EL Total row (Sl.No, Emp ID, Name & Designation ఖాళీ)
+            if (permEL > 0) {
+                mainTableRows += `<tr class="grand-total-row">
+                    <td>Total EL's @ ${permEL}</td>
+                    <td>${sumE13}</td><td>${sumF13}</td><td>${sumG13}</td>
+                    <td>0</td><td>0</td><td>0</td>
+                    <td>${sumK13}</td><td></td>
+                </tr>`;
+            }
+
+            // HPL rows (Sl.No, Emp ID, Name & Designation ఖాళీ)
+            for (let i = 0; i < 10; i++) {
+                if (hplDaysPerRow[i] > 0) {
+                    mainTableRows += `<tr>
+                        <td>${hplDaysPerRow[i]} Days HPL</td>
+                        <td>${hplAmounts[i]}</td><td>${hplDA[i]}</td><td>-</td>
+                        <td>-</td><td>-</td><td>-</td>
+                        <td>${hplTotal[i]}</td><td></td>
+                    </tr>`;
+                }
+            }
+
+            // HPL Total row (Sl.No, Emp ID, Name & Designation ఖాళీ)
+            if (permHPL > 0) {
+                mainTableRows += `<tr class="grand-total-row">
+                    <td>Total HPL's @ ${permHPL}</td>
+                    <td>${sumE24}</td><td>${sumF24}</td><td>0</td>
+                    <td>0</td><td>-</td><td>-</td>
+                    <td>${sumK24}</td><td></td>
+                </tr>`;
+            }
+
+            // Grand Total row (Sl.No, Emp ID, Name & Designation ఖాళీ)
+            mainTableRows += `<tr class="grand-total-row">
+                <td>Grand Total EL+HPL @<br> ${grandTotalDays}</td>
+              
+                <td>${grandTotalBasic}</td><td>${grandTotalDA}</td><td>${grandTotalHRA}</td>
+                <td>0</td><td>-</td><td>-</td>
+                <td>${grandTotalK}</td><td></td>
+            </tr>`;
+        }
+
+        // SUMMARY TABLE - గ్రాండ్ టోటల్ తర్వాత వేరే టేబుల్
+        let summaryTable = `
+        <table class="summary-table" border="1" cellpadding="4" style="border-collapse:collapse; width:80%; margin:30px auto; font-size:11px;">
+            <thead>
+                <tr><th colspan="3">Leave Details as on ${retDay}.${retMonth}.${retYear}</th><th colspan="3">Permitted to encash</th><th colspan="3">Amount claimed (Rs.)</th></tr>
+                <tr><th>EL</th><th>HPL</th><th>Total</th><th>EL</th><th>HPL</th><th>Total</th><th>EL</th><th>HPL</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+                <tr style="text-align:center;">
+                    <td>${total_el}</td>
+                    <td>${total_hpl}</td>
+                    <td>${total_el+total_hpl}</td>
+                    <td>${permEL}</td>
+                    <td>${permHPL}</td>
+                    <td>${permEL+permHPL}</td>
+                    <td>${sumK13}</td>
+                    <td>${sumK24}</td>
+                    <td>${sumK13+sumK24}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div style="margin-top:20px; padding:15px; background:#f8fafd; ">
+            <b>Note :</b><br>
+            1. Certified that Total EL + HPL ≤ 300 Days (${permEL} + ${permHPL} = ${permEL+permHPL})<br>
+            2. Certified that the amount claimed was neither claimed nor drawn previously.<br>
+            3. Certified that necessary entries were made in Service Register.<br>
+            <p style="text-align:right;" <b>Signature of the DDO </b></p>
+        </div>`;
+
+        // Main table header
+        let mainTableHtml = `<h4 style="text-align:center;">Encashment Bill of Earned Leave & Half Pay Leaves</h4>
+        <p style="text-align:center;">${emp_name}, ${emp_desig}, ${ret_place} retired on ${retDay}-${retMonth}-${retYear}</p>
+        <table border="1" cellpadding="4" style="border-collapse:collapse; width:100%; font-size:11px;">
+        <thead>
+            <tr><th>Sl.No</th><th>Emp ID</th><th>Name & Designation</th><th>No of Days</th><th>Basic Pay</th><th>DA-${da_percent}%</th><th>HRA-${hra_percent}%</th><th>AHRA</th><th>CCA</th><th>Others</th><th>TOTAL</th><th>Remarks</th></tr>
+        </thead>
+        <tbody>${mainTableRows}</tbody>
+        </table>`;
+
+        // Combine main table and summary table
+        let billHtml = mainTableHtml + summaryTable;
+        
+        document.getElementById('billContent').innerHTML = billHtml;
+    }
+
+    // Event listeners
+    document.querySelectorAll('.calc-input').forEach(el => el.addEventListener('input', refreshAll));
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.sheet-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+    });
+    
+    // Add merge mode change listener
+    const mergeCheckbox = document.getElementById('mergeMode');
+    if (mergeCheckbox) {
+        mergeCheckbox.addEventListener('change', refreshAll);
+    }
+    
+    window.addEventListener('load', refreshAll);
+</script>
+</body>
+</html>
